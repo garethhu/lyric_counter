@@ -1,21 +1,32 @@
+import logging
+
 from django.shortcuts import render
+from django.http import Http404
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .serializers import SongSerializer
+from .models import Song
+
+logger = logging.getLogger(__name__)
+
 # Create your views here.
 
 @api_view(['GET'])
-def get_song(request, artist, title):
-    response_obj = {
-        "artist": artist,
-        "title": title
+def apiOverview(request):
+    api_urls = {
+        'Song': '/song/<str:artist>/<str:title>'
     }
-    try:
-        song = []
-        response_obj['lyrics'] = song.lyrics
-    except Exception as e:
-        response_obj['error_msg'] = 'An error occurred getting song from artist'
-        response_obj['exception'] = e
+    return Response(api_urls)
 
-    return Response(response_obj)
+@api_view(['GET'])
+def get_song(request, artist, title):
+    try:
+        song = Song(artist, title)
+        serializer = SongSerializer(song, many=False)
+        return Response(serializer.data)
+    except Exception as e:  # TODO custom exception
+        logger.error(e)
+        raise Http404
+
