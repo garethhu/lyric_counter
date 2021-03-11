@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'lyricsovh_client'
+    'lyricsovh_client',
+    'musicbrainzngs_client'
 ]
 
 MIDDLEWARE = [
