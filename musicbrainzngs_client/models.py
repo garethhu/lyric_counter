@@ -7,7 +7,7 @@ import musicbrainzngs
 musicbrainzngs.set_useragent("lyrics_counter", "v0.1", "garethjhumphries@gmail.com")
 
 class Artist(models.Model):
-    artist = models.CharField(max_length=100)
+    artist = models.CharField(max_length=100)  # TODO pull out length to config
     artist_id = models.CharField(max_length=36)
     tracks = JSONField()
 

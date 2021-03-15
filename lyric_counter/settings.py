@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'lyricsovh_client',
-    'musicbrainzngs_client'
+    'musicbrainzngs_client',
+    'stats',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +135,6 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'DEBUG',
     },
 }
