@@ -17,9 +17,15 @@ class Song(models.Model):
     class Meta:
         managed = False
 
-    def __init__(self, artist, title):
+    @classmethod
+    def new_song(cls, artist, title):
+        response = requests.get('https://api.lyrics.ovh/v1/' + artist + '/' + title,
+                                timeout=10)  # TODO configurable timeout
+        logger.debug("Song.Response: " + str(response))
+        lyrics = response.json()['lyrics']
+        return cls(artist, title, lyrics)
+
+    def __init__(self, artist, title, lyrics):
         self.artist = artist
         self.title = title
-        response = requests.get('https://api.lyrics.ovh/v1/' + artist + '/' + title, timeout=10)  # TODO configurable timeout
-        logger.debug("Song.Response: " + str(response))
-        self.lyrics = response.json()['lyrics']
+        self.lyrics = lyrics

@@ -22,7 +22,7 @@ def apiOverview(request):
 @api_view(['GET'])
 def get_song(request, artist, title):
     try:
-        song = Song(artist, title)
+        song = Song.new_song(artist, title)
         serializer = SongSerializer(song, many=False)
         return Response(serializer.data)
     except Exception as e:  # TODO custom exception

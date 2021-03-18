@@ -1,17 +1,20 @@
 from django.test import TestCase
 
 # Create your tests here.
+from lyricsovh_client.models import Song
 from stats.models import DiscographyStats
 
 
+# TODO use a test template with more examples and covering unhappy paths and edge cases
 class DiscographyStatsTest(TestCase):
 
     def setUp(self):
         tracks = [
-            "these lyrics",
-            "are the best lyrics ever",
-            "in the world seriously",
-            "woop woop"]
+            Song("artist1", "song1", "these lyrics"),
+            Song("artist1", "song2", "are the best lyrics ever"),
+            Song("artist1", "song3", "in the world seriously"),
+            Song("artist1", "song4", "woop woop")
+        ]
         self.stats = DiscographyStats(tracks)
 
     def test_avg_len(self):

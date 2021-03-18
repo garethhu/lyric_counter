@@ -27,9 +27,9 @@ class DiscographyStats(models.Model):
         managed = False
 
     @staticmethod
-    def new_song(artist_name, name):
+    def get_song(artist_name, name):
         try:
-            return Song(artist_name, name)
+            return Song.new_song(artist_name, name)
         except Exception as e:
             logger.error(e)
             return None
@@ -40,14 +40,14 @@ class DiscographyStats(models.Model):
             artist = Artist(artist_name)
             track_names = artist.tracks
             pool = ThreadPoolExecutor(32)  # TODO make this configurable
-            song = lambda name: DiscographyStats.new_song(artist_name, name)
+            song = lambda name: DiscographyStats.get_song(artist_name, name)
             tracks_fut = [pool.submit(song, name) for name in track_names]
             tracks = filter(lambda track: track is not None, [track_fut.result() for track_fut in tracks_fut])
-            _disc_stats[artist] = cls(tracks)
-        return _disc_stats[artist]
+            _disc_stats[artist_name] = cls(tracks)
+        return _disc_stats[artist_name]
 
-    def __init__(self, tracks, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, tracks):
+        super().__init__()
         self._track_lengths = None
         self.tracks = tracks
 
