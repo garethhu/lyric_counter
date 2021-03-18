@@ -1,4 +1,4 @@
-# Lyrics Counter
+# Lyric Counter
 
 ## Overview
 Lyrics counter is a django project that provides a rest api for getting information about music artists. The project is
