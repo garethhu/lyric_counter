@@ -28,7 +28,7 @@ def get_avg_len(request, artist):
         disc_stats = DiscographyStats.disc_stats(artist)
         return Response(disc_stats.avg_track_length)
     except Exception as e: #  TODO custom exception
-        logger.error(e)
+        logger.exception(e)
         raise Http404
 
 @api_view(['GET'])
@@ -37,7 +37,7 @@ def get_min_len(request, artist):
         disc_stats = DiscographyStats.disc_stats(artist)
         return Response(disc_stats.min_track_length)
     except Exception as e: #  TODO custom exception
-        logger.error(e)
+        logger.exception(e)
         raise Http404
 
 @api_view(['GET'])
@@ -46,7 +46,7 @@ def get_max_len(request, artist):
         disc_stats = DiscographyStats.disc_stats(artist)
         return Response(disc_stats.max_track_length)
     except Exception as e: #  TODO custom exception
-        logger.error(e)
+        logger.exception(e)
         raise Http404
 
 @api_view(['GET'])
@@ -55,7 +55,7 @@ def get_var_len(request, artist):
         disc_stats = DiscographyStats.disc_stats(artist)
         return Response(disc_stats.var_track_length)
     except Exception as e: #  TODO custom exception
-        logger.error(e)
+        logger.exception(e)
         raise Http404
 
 @api_view(['GET'])
@@ -64,5 +64,5 @@ def get_sd_len(request, artist):
         disc_stats = DiscographyStats.disc_stats(artist)
         return Response(disc_stats.sd_track_length)
     except Exception as e: #  TODO custom exception
-        logger.error(e)
+        logger.exception(e)
         raise Http404

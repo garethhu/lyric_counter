@@ -26,26 +26,30 @@ class DiscographyStats(models.Model):
     class Meta:
         managed = False
 
-    def disc_stats(artist):
-        if artist not in _disc_stats:
-            _disc_stats[artist] = DiscographyStats(artist)
-        return _disc_stats[artist]
-
-    def __init__(self, artist_name):
-        self._track_lengths = None
-        self.artist = Artist(artist_name)
-        track_names = self.artist.tracks
-        pool = ThreadPoolExecutor(32)  # TODO make this configurable
-        song = lambda name: self.new_song(artist_name, name)
-        tracks_fut = [pool.submit(song, name) for name in track_names]
-        self.tracks = [track_fut.result() for track_fut in tracks_fut]
-
-    def new_song(self, artist_name, name):
+    @staticmethod
+    def new_song(artist_name, name):
         try:
             return Song(artist_name, name)
         except Exception as e:
             logger.error(e)
             return None
+
+    @classmethod
+    def disc_stats(cls, artist_name):
+        if artist_name not in _disc_stats:
+            artist = Artist(artist_name)
+            track_names = artist.tracks
+            pool = ThreadPoolExecutor(32)  # TODO make this configurable
+            song = lambda name: DiscographyStats.new_song(artist_name, name)
+            tracks_fut = [pool.submit(song, name) for name in track_names]
+            tracks = filter(lambda track: track is not None, [track_fut.result() for track_fut in tracks_fut])
+            _disc_stats[artist] = cls(tracks)
+        return _disc_stats[artist]
+
+    def __init__(self, tracks, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._track_lengths = None
+        self.tracks = tracks
 
     @property
     def avg_track_length(self):
@@ -71,8 +75,7 @@ class DiscographyStats(models.Model):
     def track_lengths(self):
         if self._track_lengths is None:
             logger.debug("DiscographyStats: Calculating track tokens")
-            tracks_tokens = [track.lyrics.strip(string.punctuation).split() for track in
-                             filter(lambda track: track is not None, self.tracks)]
+            tracks_tokens = [track.lyrics.strip(string.punctuation).split() for track in self.tracks]
             logger.debug("DiscographyStats.Tokens: " + str(tracks_tokens))
             logger.debug("DiscographyStats: Calculating track lengths")
             self._track_lengths = [sum([track_token.isalpha() for track_token in track_tokens]) for track_tokens in

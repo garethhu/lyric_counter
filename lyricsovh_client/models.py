@@ -7,6 +7,8 @@ import requests
 logger = logging.getLogger(__name__)
 
 # Create your models here.
+
+
 class Song(models.Model):
     artist = models.CharField(max_length=100)  # TODO pull out length to config
     title = models.CharField(max_length=100)  # TODO pull out length to config
